@@ -32,7 +32,10 @@ Casos confirmados,muertos y recuperados en todo el mundo segun los dias.
 grafico <- ggplot(covid,aes(x=date, y=cases))
 grafico + geom_point(aes(color = type))
 
-            
+   
+   
+   
+   
 ```
 
 
