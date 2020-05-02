@@ -1,0 +1,76 @@
+---
+title: "Visualización"
+author: "Elizaveta"
+date: "2/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(ggmap)
+library(dplyr)
+library(coefplot)
+library(readr)
+library(knitr)
+
+covid <- read.csv("https://raw.githubusercontent.com/Covid19R/coronavirus/master/csv/coronavirus.csv", stringsAsFactors = FALSE)
+
+covid$date <- as.Date(covid$date)
+
+#View(covid)
+class(covid)#data frame
+
+```
+
+
+Casos confirmados,muertos y recuperados en todo el mundo segun los dias.
+```{r,eval=TRUE}
+grafico <- ggplot(covid,aes(x=date, y=cases))
+grafico + geom_point(aes(color = type))
+
+            
+```
+
+
+
+********************************
+
+Escojo el mapa y lo que deseo coger del dataset.
+
+```{r,eval=TRUE}
+us = map_data("world")
+
+casos = covid %>%
+filter(type=="death")
+  
+
+casos
+
+```
+
+Pongo la base 
+```{r,eval=TRUE}
+
+mundo = ggplot()
+#must define map first
+mundo = mundo + geom_map(data=us, map=us,aes(x=long, y=lat, map_id=region),fill="#ffffff",color="#ffffff", size=0.15)
+
+mundo
+```
+Coloreo el mapa mundi
+
+```{r,eval=TRUE}
+
+g = mundo + geom_map(data=casos, map=us,
+aes(fill=cases, map_id=Country.Region),
+color="#ffffff", size=0.15)
+g
+```
+!!!NO COMPLICA BIEN¡¡¡HAY QUE ARREGLARLO.
+
+
+Desde este sitio [transparencias](https://web.stanford.edu/~imalone/VAM/VAMSlides.pdf).
