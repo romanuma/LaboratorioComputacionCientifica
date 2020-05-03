@@ -24,10 +24,7 @@ Descarga de datasets actualizados
 
 ```{r, warning=FALSE}
 covid <- read.csv("https://raw.githubusercontent.com/Covid19R/coronavirus/master/csv/coronavirus.csv", stringsAsFactors = FALSE)
-
 covid$date <- as.Date(covid$date)
-
-
 covid2 <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/7d57bf19c5ec110069e81e1ec145b6b8d61219fa/public/data/owid-covid-data.csv")
 ```
 
@@ -77,6 +74,45 @@ arrange(datos_actuales_nuevos, desc(new_cases))
 ```
 
 
+¿Qué pais tiene más casos?
+
+```{r}
+peor_pais <- arrange(covid2,desc(covid2$total_cases))
+
+peor_pais <- filter(peor_pais,location!="World")
+
+peor_pais$location[1]
+```
+
+
+¿Cuantas muertes ha conllevado el virus?
+
+```{r}
+covid2$total_deaths
+```
+
+¿Cuantos casos ha conllevado el virus?
+
+```{r}
+covid2$total_cases
+```
+
+
+¿Que pais ha realizado mas test en proporcion?
+
+
+```{r}
+mas_test<-arrange(covid2,desc(covid2$total_tests_per_thousand))
+mas_test$location[1]
+```
+
+¿Y mas test?
+
+```{r}
+mas_test2<-arrange(covid2,desc(covid2$total_tests))
+mas_test2$location[1]
+```
+
 
 
 Gráfico casos confirmados, muertos y recuperados en todo el mundo segun los dias.
@@ -84,7 +120,6 @@ Gráfico casos confirmados, muertos y recuperados en todo el mundo segun los dia
 ```{r,eval=TRUE}
 grafico <- ggplot(covid,aes(x=date, y=cases))
 grafico + geom_point(aes(color = type))
-
             
 ```
 
@@ -103,34 +138,61 @@ grafico3
 ```
 
 
+
+Gráfica que muestra el numero de nuevos casos diarios en el mundo
+
+```{r}
+
+
+
+df<-filter(covid2,covid2$location=="World")
+
+ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+  theme_minimal() 
+
+```
+
+
+
+Gráfica que muestra el numero de nuevos casos diarios en el España
+
+```{r}
+
+
+
+
+df<-filter(covid2,covid2$location=="Spain")
+
+ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+  theme_minimal() 
+
+```
+
+
+
+
+
+
 ********************************
 
 Escojo el mapa y lo que deseo coger del dataset.
 
 ```{r,eval=TRUE}
 us = map_data("world")
-
 casos = covid %>%
 filter(type=="death")
   
-
 casos
-
 ```
 
 Pongo la base 
 ```{r,eval=TRUE}
-
 mundo = ggplot()
 #must define map first
 mundo = mundo + geom_map(data=us, map=us,aes(x=long, y=lat, map_id=region),fill="#ffffff",color="#ffffff", size=0.15)
-
 mundo
 ```
 Coloreo el mapa mundi
 
 ```{r,eval=TRUE}
-
 g = mundo + geom_map(data=casos, map=us,
 aes(fill=cases, map_id=Country.Region),
 color="#ffffff", size=0.15)
@@ -140,3 +202,4 @@ g
 
 
 Desde este sitio [transparencias](https://web.stanford.edu/~imalone/VAM/VAMSlides.pdf).
+
