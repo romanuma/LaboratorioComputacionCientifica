@@ -18,6 +18,9 @@ library(dplyr)
 library(coefplot)
 library(readr)
 library(knitr)
+library(ggthemes)
+library(gganimate)
+library(maps)
 ```
 
 Descarga de datasets actualizados
@@ -174,34 +177,49 @@ ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(co
 
 
 ********************************
+Selecciono los datos del dataset para poder hacer el mapa dinamico.
 
-Escojo el mapa y lo que deseo coger del dataset.
+```{r}
 
-```{r,eval=TRUE}
-us = map_data("world")
-casos = covid %>%
-filter(type=="death")
-  
-casos
+map <- covid %>%
+  group_by(date, Lat,Long) %>%
+  add_tally(n()) %>%
+  arrange(date,Country.Region) %>%
+  distinct()
+map$date <- as.Date(covid$date)
+map$latitude <- as.numeric(covid$Lat) 
+map$longitude <- as.numeric(covid$Long) 
 ```
+Escojo un mapa del mundo general: 
+```{r}
+ggplot() +
+  borders("world", colour = "gray90", fill = "gray85") +
+  theme_map()
+  ```
 
-Pongo la base 
-```{r,eval=TRUE}
-mundo = ggplot()
-#must define map first
-mundo = mundo + geom_map(data=us, map=us,aes(x=long, y=lat, map_id=region),fill="#ffffff",color="#ffffff", size=0.15)
-mundo
+Añado un mapa mismo estatico: 
+
+```{r}
+ggplot(data = map) +
+  borders("world", colour = "gray90", fill = "gray85") +
+  theme_map() + 
+  geom_point(aes(x = longitude, y = latitude, size = n), 
+             colour = "#351C4D", alpha = 0.55) +
+  labs(size = "Casos") +
+  ggtitle("Casos totales COVID-19") 
+
 ```
-Coloreo el mapa mundi
+Mapa dinamico listo: 
+```{r}
 
-```{r,eval=TRUE}
-g = mundo + geom_map(data=casos, map=us,
-aes(fill=cases, map_id=Country.Region),
-color="#ffffff", size=0.15)
-g
+ggplot() +
+  borders("world", colour = "gray90", fill = "gray85") +
+  theme_map() + 
+  geom_point(data = map, aes(x = longitude, y = latitude, size = n), 
+             colour = "#351C4D", alpha = 0.5) +
+  labs(title = "Date: {frame_time}", size = "Casos") +
+  transition_time(date) +
+  ease_aes("linear")
+
 ```
-!!!NO COMPLICA BIEN¡¡¡HAY QUE ARREGLARLO.
-
-
-Desde este sitio [transparencias](https://web.stanford.edu/~imalone/VAM/VAMSlides.pdf).
 
