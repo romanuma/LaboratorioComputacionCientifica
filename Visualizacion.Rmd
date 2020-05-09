@@ -183,7 +183,6 @@ Selecciono los datos del dataset para poder hacer el mapa dinamico.
 
 map <- covid %>%
   group_by(date, Lat,Long) %>%
-  add_tally(n()) %>%
   arrange(date,Country.Region) %>%
   distinct()
 map$date <- as.Date(covid$date)
@@ -203,7 +202,7 @@ Añado un mapa mismo estatico:
 ggplot(data = map) +
   borders("world", colour = "gray90", fill = "gray85") +
   theme_map() + 
-  geom_point(aes(x = longitude, y = latitude, size = n), 
+  geom_point(aes(x = longitude, y = latitude, size = cases), 
              colour = "#351C4D", alpha = 0.55) +
   labs(size = "Casos") +
   ggtitle("Casos totales COVID-19") 
@@ -215,7 +214,7 @@ Mapa dinamico listo:
 ggplot() +
   borders("world", colour = "gray90", fill = "gray85") +
   theme_map() + 
-  geom_point(data = map, aes(x = longitude, y = latitude, size = n), 
+  geom_point(data = map, aes(x = longitude, y = latitude, size = cases), 
              colour = "#351C4D", alpha = 0.5) +
   labs(title = "Date: {frame_time}", size = "Casos") +
   transition_time(date) +
