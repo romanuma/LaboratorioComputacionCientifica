@@ -81,23 +81,22 @@ arrange(datos_actuales_nuevos, desc(new_cases))
 
 ```{r}
 peor_pais <- arrange(covid2,desc(covid2$total_cases))
-
 peor_pais <- filter(peor_pais,location!="World")
-
-peor_pais$location[1]
+peor_pais$location[[1]]
 ```
 
 
 ¿Cuantas muertes ha conllevado el virus?
 
 ```{r}
-covid2$total_deaths
+total_world<- top_n(filter(covid2, location=="World"),1, date)
+total_world$total_deaths
 ```
 
 ¿Cuantos casos ha conllevado el virus?
 
 ```{r}
-covid2$total_cases
+total_world$total_cases
 ```
 
 
@@ -130,7 +129,6 @@ Gráfico 10 países con más casos totales de infectados
 
 ```{r}
 grafico2 <- ggplot(top_n(filter(datos_actuales, location!="World"),10,total_cases), aes(x=iso_code, y=total_cases)) + geom_col(aes(fill=iso_code)) + ggtitle("Top 10 países con más casos totales de COVID-19") + theme(plot.title=element_text(color="blue", face="bold")) + labs(x="Países", y="Casos Totales") + theme(axis.title.x = element_text(color="blue"), axis.title.y = element_text(color="blue")) + scale_fill_discrete(guide = guide_legend(title = "Países", keywidth = 2))
-
 grafico2
 ```
 
@@ -138,7 +136,6 @@ Gráfico 10 países con más casos de infectados en este último día
 
 ```{r}
 grafico3 <- ggplot(top_n(filter(datos_actuales, location!="World"),10,new_cases), aes(x=iso_code, y=new_cases)) + geom_col(aes(fill=iso_code)) + ggtitle("Top 10 países con nuevos casos de COVID-19") + theme(plot.title=element_text(color="blue", face="bold")) + labs(x="Países", y="Nuevos Casos") + theme(axis.title.x = element_text(color="blue"), axis.title.y = element_text(color="blue")) + scale_fill_discrete(guide = guide_legend(title = "Países", keywidth = 2))
-
 grafico3
 ```
 
@@ -147,27 +144,33 @@ grafico3
 Gráfica que muestra el numero de nuevos casos diarios en el mundo
 
 ```{r}
-
-
-
 df<-filter(covid2,covid2$location=="World")
 
-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+  theme_minimal() 
+
+g1<-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+ ggtitle("Grafico de nuevos casos diarios en el mundo")+  theme_minimal() + transition_reveal(as.numeric(df$date))
+g1
 
 ```
 
 
 
-Gráfica que muestra el numero de nuevos casos diarios en el España
+
+Gráfica que muestra el numero de nuevos casos diarios en España
+
+```{r}
+df<-filter(covid2,covid2$location=="Spain")
+
+
+g1<-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+ ggtitle("Grafico de nuevos casos diarios en en España")+  theme_minimal() + transition_reveal(as.numeric(df$date))
+g1
+
+```
+
+
 
 ```{r}
 
-
-
-
-df<-filter(covid2,covid2$location=="Spain")
-
-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+  theme_minimal() 
+datos_mundial<-covid2 %>% 
 
 ```
 
@@ -180,7 +183,6 @@ ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(co
 Selecciono los datos del dataset para poder hacer el mapa dinamico.
 
 ```{r}
-
 map <- covid %>%
   group_by(date, Lat,Long) %>%
   arrange(date,Country.Region) %>%
@@ -206,11 +208,9 @@ ggplot(data = map) +
              colour = "#351C4D", alpha = 0.55) +
   labs(size = "Casos") +
   ggtitle("Casos totales COVID-19") 
-
 ```
 Mapa dinamico listo: 
 ```{r}
-
 ggplot() +
   borders("world", colour = "gray90", fill = "gray85") +
   theme_map() + 
@@ -219,6 +219,4 @@ ggplot() +
   labs(title = "Date: {frame_time}", size = "Casos") +
   transition_time(date) +
   ease_aes("linear")
-
 ```
-
