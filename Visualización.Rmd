@@ -35,8 +35,50 @@ covid2 <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/7d57bf1
 ```
 
 
+Extraemos los datos más actuales correspondientes a España
 
+```{r}
+ultimos_datos <- top_n(filter(covid2, iso_code=="ESP"),1, date)
+```
 
+Casos y muertes actuales en España
+
+```{r}
+ultimos_datos$total_cases
+ultimos_datos$total_deaths
+```
+
+Nuevos casos y muertes en España
+
+```{r}
+ultimos_datos$new_cases
+ultimos_datos$new_deaths
+```
+
+Extraigo los datos actuales totales de cada país
+
+```{r}
+datos_actuales <- top_n(covid2, 1, date)
+datos_actuales_totales <- select(datos_actuales, iso_code, location, date, total_cases, total_deaths)
+```
+
+Y los ordeno por el número de casos totales
+
+```{r}
+head(arrange(datos_actuales_totales, desc(total_cases)), 10)
+```
+
+También extraigo el número de nuevos casos
+
+```{r}
+datos_actuales_nuevos <- select(datos_actuales, iso_code, location, date, new_cases, new_deaths)
+```
+
+Y los ordeno por el número de casos nuevos en el último día
+
+```{r}
+head(arrange(datos_actuales_nuevos, desc(new_cases)), 10)
+```
 ¿Qué pais tiene más casos?
 
 ```{r}
@@ -84,8 +126,27 @@ g1<-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(ae
 g1
 ```
 
+Gráfico casos confirmados, muertos y recuperados en todo el mundo segun los dias.
+
+```{r,eval=TRUE}
+grafico <- ggplot(covid,aes(x=date, y=cases))
+grafico + geom_point(aes(color = type))
+ ```           
 
 
+Gráfico 10 países con más casos totales de infectados
+
+```{r}
+grafico2 <- ggplot(top_n(filter(datos_actuales, location!="World"),10,total_cases), aes(x=iso_code, y=total_cases)) + geom_col(aes(fill=iso_code)) + ggtitle("Top 10 países con más casos totales de COVID-19") + theme(plot.title=element_text(color="blue", face="bold")) + labs(x="Países", y="Casos Totales") + theme(axis.title.x = element_text(color="blue"), axis.title.y = element_text(color="blue")) + scale_fill_discrete(guide = guide_legend(title = "Países", keywidth = 2))
+grafico2
+```
+
+Gráfico 10 países con más casos de infectados en este último día
+
+```{r}
+grafico3 <- ggplot(top_n(filter(datos_actuales, location!="World"),10,new_cases), aes(x=iso_code, y=new_cases)) + geom_col(aes(fill=iso_code)) + ggtitle("Top 10 países con nuevos casos de COVID-19") + theme(plot.title=element_text(color="blue", face="bold")) + labs(x="Países", y="Nuevos Casos") + theme(axis.title.x = element_text(color="blue"), axis.title.y = element_text(color="blue")) + scale_fill_discrete(guide = guide_legend(title = "Países", keywidth = 2))
+grafico3
+```
 
 Gráfica que muestra el numero de nuevos casos diarios en España
 
