@@ -1,0 +1,117 @@
+---
+title: "Visualización"
+author: "Elizaveta, Javier y Adrián"
+date: "2/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Inicio librerías
+
+```{r, warning=FALSE}
+library(ggplot2)
+library(ggmap)
+library(dplyr)
+library(coefplot)
+library(readr)
+library(knitr)
+library(ggthemes)
+library(gganimate)
+library(maps)
+library(readr)
+library(readxl)
+```
+
+Descarga de datasets actualizados
+
+```{r, warning=FALSE}
+covid <- read.csv("https://raw.githubusercontent.com/Covid19R/coronavirus/master/csv/coronavirus.csv", stringsAsFactors = FALSE)
+covid$date <- as.Date(covid$date)
+covid2 <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/7d57bf19c5ec110069e81e1ec145b6b8d61219fa/public/data/owid-covid-data.csv")
+```
+
+
+
+
+¿Qué pais tiene más casos?
+
+```{r}
+peor_pais <- arrange(covid2,desc(covid2$total_cases))
+peor_pais <- filter(peor_pais,location!="World")
+peor_pais$location[[1]]
+```
+
+
+¿Cuantas muertes ha conllevado el virus?
+
+```{r}
+total_world<- top_n(filter(covid2, location=="World"),1, date)
+total_world$total_deaths
+```
+
+¿Cuantos casos ha conllevado el virus?
+
+```{r}
+total_world$total_cases
+```
+
+
+¿Que pais ha realizado mas test en proporcion?
+
+
+```{r}
+mas_test<-arrange(covid2,desc(covid2$total_tests_per_thousand))
+mas_test$location[1]
+```
+
+¿Y mas test?
+
+```{r}
+mas_test2<-arrange(covid2,desc(covid2$total_tests))
+mas_test2$location[1]
+```
+
+
+Gráfica que muestra el numero de nuevos casos diarios en el mundo
+
+```{r}
+df<-filter(covid2,covid2$location=="World")
+g1<-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+ ggtitle("Grafico de nuevos casos diarios en el mundo")+  theme_minimal() + transition_reveal(as.numeric(df$date))
+g1
+```
+
+
+
+
+Gráfica que muestra el numero de nuevos casos diarios en España
+
+```{r}
+df<-filter(covid2,covid2$location=="Spain")
+g1<-ggplot(df,aes(date,new_cases)) +xlab("fecha") + ylab("casos")+ geom_point(aes(color=new_cases))+ ggtitle("Grafico de nuevos casos diarios en en España")+  theme_minimal() + transition_reveal(as.numeric(df$date))
+g1
+```
+
+
+
+```{r}
+totales<-edadsexo[edadsexo$sexo=="Total",][-11,]
+casos<-totales$Casos
+g2<-ggplot(totales,aes(totales$edad,totales$Casos)) +xlab("edades") + ylab("casos")+ geom_col(aes(fill=casos))+ ggtitle("Grafico de casos por edades en España") +theme_minimal() 
+g2
+```
+
+Distribución hombres/mujeres por edades
+
+```{r}
+require(grDevices)
+totales<-totales[-11]
+pie(totales$Casos, 
+    labels=levels(totales$edad), 
+    col=heat.colors(10),
+    main= "Gráfico de sectores- casos por edades en España")
+```
+
