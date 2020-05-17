@@ -24,6 +24,7 @@ library(gganimate)
 library(maps)
 library(readr)
 library(readxl)
+library(highcharter)
 ```
 
 Descarga de datasets actualizados
@@ -176,6 +177,14 @@ pie(totales$Casos,
     main= "Gráfico de sectores- casos por edades en España")
 ```
 
+Casos por edades de Mujeres,Hombres y Totales:
+```{r}
+mpgman2 <- edadsexo %>%
+  count(edad,Casos,sexo) %>%
+  glimpse()    
+
+hchart(mpgman2, "column", hcaes(x = sexo, y = Casos, group = edad)) %>% hc_add_theme(hc_theme_darkunica())
+```
 
 
 ```{r,results= FALSE}
