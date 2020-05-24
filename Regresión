@@ -1,0 +1,125 @@
+---
+title: "Regresion"
+output: html_document
+---
+
+# Cargamos los paquetes
+
+```{r, warning=FALSE}
+library(dplyr)
+```
+
+# Cargamos las librerías
+
+```{r}
+rango_edades <- read.csv("https://raw.githubusercontent.com/datadista/datasets/master/COVID%2019/nacional_covid19_rango_edad.csv")
+
+names(rango_edades) <- c("fecha","rango_edad","sexo","casos_confirmados","hospitalizados","ingresos_uzi","fallecidos")
+attach(rango_edades)
+```
+
+# Tratamiento de librería
+
+Para empezar vamos a calcular el total de todas las variables con respecto a los rangos de edad a los que pertenecen.
+
+```{r}
+gr <- group_by(rango_edades, rango_edad)
+gr <- filter(gr, sexo=="ambos", rango_edad!="Total")
+```
+
+
+```{r}
+edades <- c((0+9)/2,(10+19)/2,(20+29)/2,(30+39)/2,(40+49)/2,(50+59)/2,(60+69)/2,(70+79)/2,(80+89)/2,(80+89)/2,(90+99)/2)
+sum_casos <- summarise(gr, sum=sum(casos_confirmados))
+sum_casos <- mutate(sum_casos, edades=edades)
+sum_casos <- transmute(sum_casos, edades, sum)
+sum_casos
+sum_hospitalizados <- summarise(gr, sum=sum(hospitalizados))
+sum_hospitalizados <- mutate(sum_hospitalizados, edades=edades)
+sum_hospitalizados <- transmute(sum_hospitalizados, edades, sum)
+sum_hospitalizados
+sum_ingresos <- summarise(gr, sum=sum(ingresos_uzi))
+sum_ingresos <- mutate(sum_ingresos, edades=edades)
+sum_ingresos <- transmute(sum_ingresos, edades, sum)
+sum_ingresos
+sum_fallecidos <- summarise(gr, sum=sum(fallecidos))
+sum_fallecidos <- mutate(sum_fallecidos, edades=edades)
+sum_fallecidos <- transmute(sum_fallecidos, edades, sum)
+sum_fallecidos
+```
+
+
+# Comenzamos con el análisis exploratorio
+
+Primero vemos las varibles con las que contamos, del tipo que son y en el rango de valores en el que se mueven.
+
+```{r}
+str(gr)
+summary(gr)
+quantile(gr$casos_confirmados)
+quantile(gr$hospitalizados)
+quantile(gr$ingresos_uzi)
+quantile(gr$fallecidos)
+```
+
+Ahora podemos hacer los plot para comprobar si puede existir alguna regresión
+
+```{r}
+plot(sum_casos)
+plot(sum_fallecidos)
+plot(sum_hospitalizados)
+plot(sum_ingresos)
+```
+
+# Creacion modelos
+
+```{r}
+lm1 <- lm(edades~sum, data=sum_fallecidos)
+lm1
+plot(sum_fallecidos)
+abline(lm1)
+summary(lm1)
+```
+
+Intentamos mejorarla convirtiendola a modelo no lineal
+
+```{r}
+lm1 <- lm(edades~I(sum)+I(sum^2), data=sum_fallecidos)
+lm1
+summary(lm1)
+```
+
+```{r}
+lm1 <- lm(edades~log(sum), data=sum_fallecidos)
+lm1
+summary(lm1)
+```
+
+En el caso de los fallecidos vemos como un ajuste logaritmico es el mejor, de modo que cuanto mayor sea la edad del contagiado, mayor será la posibilidad de fallecimiento.
+
+
+```{r}
+lm2 <- lm(edades~sum, data=sum_hospitalizados)
+lm2
+plot(sum_hospitalizados)
+abline(lm2)
+summary(lm2)
+```
+
+Como en el caso anterior vemos que este ajuste lineal no es lo más óptimo, de modo que buscamos otro mejor.
+
+```{r}
+lm2 <- lm(edades~I(sum)+I(sum^2), data=sum_hospitalizados)
+lm2
+summary(lm2)
+```
+
+```{r}
+lm2 <- lm(edades~log(sum), data=sum_hospitalizados)
+lm2
+summary(lm2)
+```
+ En este caso ninguno mejora el ajuste lineal, por lo que no se ha podido encontrar ninguno útil, ya que son todos tienen una variabilidad representada del modelo (R-Squared) muy baja.
+
+
+
