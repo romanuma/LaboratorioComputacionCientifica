@@ -83,17 +83,17 @@ plot(lm1)
 ```
  ### Se analiza el modelo: 
  Con respecto al summary:
-- En el Coefficients se puede observar que en este caso no es muy significativo la variable "sum" ya que en el t_value esta cerca del 0 por tanto no es muy significante y en la probablididad de los valores sean significativos también aparece que no es muy significante y por tanto esta variable se podria quitar.
-- En el R estimador tan solo es hay un 42,82% lo cuál indica que no es muy bueno el modelo y con respecto al R ajustado no son muy cercanos por tanto podria haber sobrecargado un poco el modelo.
+- En el Coefficients se puede observar que en este caso no es muy significativo la variable "sum" ya que en el t_value esta cerca del 0  y en la probablididad de los valores  que sean significativos también aparece que no es muy significante y por tanto esta variable se podría quitar.
+- En el R estimador tan solo es hay un 42,82% lo cuál indica que no es muy bueno el modelo y con respecto al R ajustado al no ser muy cercanos  podria haber sobrecargado un poco el modelo.
 - En el F-statistic no es muy alto pero sigue siendo mayor que 1 por tanto si H0=0 (hipotesis nula) entonces significa que al menos hay un modelo aqui.
 - En el p-value es menor que el nivel de significancia(0,05) por tanto tomando la hipotesis planteada anterior se puede decir que aceptamos H1.
 - En los grados de libretad son muy bajos por tanto no es muy bueno.
 
 Con respecto a las gráficas: 
-- 1 Gráfica : se observa que no es muy bueno el modelo  ya que los valores no se acercan a la linea y=0.Tambíen podemos ver valores que podrían ser significantes o outliers.
+- 1 Gráfica : se observa que no es muy bueno el modelo  ya que los valores no se acercan a la linea y=0.Tambíen podemos ver valores que podrían ser significativos o outliers.
 - 2 Gráfica : el modelo no se acerca a la linea y=x y la mayoria de los valores no estan distribuidas en ella por tanto es bastante malo el modelo.
-- 3 Gráfica: Hay bastantes valores que pueden ser outliers o importantes y los valores son bastante dispersos por tanto tiene bastantes errores.Quitando los outliers se podría mejorar bastante la gráfica.
-- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de imporantes son los valores.
+- 3 Gráfica: Hay bastantes valores que pueden ser outliers o importantes y los valores  y son bastante dispersos por tanto tiene bastantes errores.Quitando los outliers se podría mejorar bastante la gráfica.
+- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de importantes son los valores.
 
 En general se observa que el modelo no es muy bueno y que se podria mejorar.
 
@@ -103,13 +103,49 @@ En general se observa que el modelo no es muy bueno y que se podria mejorar.
 lm1 <- lm(edades~I(sum)+I(sum^2), data=sum_fallecidos)
 lm1
 summary(lm1)
+plot(lm1)
 ```
+### Se analiza el modelo: 
+ Con respecto al summary:
+- En los errores (Residuals) ha aumentado el mínimo y el máximo con respecto al modelo lineal por tanto no es muy bueno el modelo ya que podría haber errores fatales.
+- En el Coefficients es peor el modelo elegido ya que ahora el t-value ha bajado y la probabilidad de significancia ha bajado más aun que ahora es menos significante y por tanto se podría quitar ya que no aportan nada mejor.
+- En el R estimador se ha mejorado en este aspecto en un 53,6% y el R ajustado también se ha mejorado pero aunque se mejore se sabe que realemente no es bueno el modelo.
+- En el F-statistic ha disminuido y por tanto es peor aunque sigue cumpliendo que considerando  H0=0 (hipotesis nula) en este caso hay al menos un modelo.
+- En el p-value es casi como el nivel de significancia pero es un poco más bajo por tanto se sigue aceptando H1.
+- En los grados de libretad han disminuido por tanto es peor el modelo comparandolo con el anterior.
+
+Con respecto a las gráficas: 
+- 1 Gráfica :se ha mejorado el modelo ya que se aproxima más a y=0 y por tanto aunque hay errores pero son menores que los del modelo anterior.
+- 2 Gráfica : se aprecia que en esta gráfica se ha mejorado un poco comparandolo con el modelo anterior aunque siguen habiendo valores outliers los cuales hacen que la gráfica no salga mejor en y=x.
+- 3 Gráfica: hay una parecida dispersión con la anterior grafica pero fijandose en la escala se observa que se ha mejorado el modelo.
+- 4 Gráfica: parece  que hay más valores que podrían ser outliers o importantes tomando la distancia de Cook por tanto realmente no se ha mejorado el modelo.
+
+En general este modelo  se observa que es peor que el anterior aunque "aparentemente" parece bueno.Por tanto habría que quedarse con el modelo anterior.
+ 
+ 
 ## Modelo logarítmico
 ```{r}
 lm1 <- lm(edades~log(sum), data=sum_fallecidos)
 lm1
 summary(lm1)
+plot(lm1)
 ```
+
+### Se analiza el modelo: 
+ Con respecto al summary:
+- En los errores (Residuals) se han bajado el mínimo con respecto al primer modelo pero también se ha aumentado el máximo por tanto no nos dice si el modelo ha mejorado.
+- En el Coefficients se ha empeorado un poco ya que ahora edades(Intercept) ha empeorado y no es tan significativo como antes compradandolo con el modelo primero y se observa esto en el t-value ya que es incluso negativo y el Pr(>|t|) es casi nulo.La pendiente tiene nivel de significancia pero tampoco lo es mucho.
+- En el R estimador es un 60,73% por tanto se ha mejorado bastante con respecto a los dos modelos vistos anteriormente por tanto significa que es mejor el modelo.Viendo el R ajustado es muy cercano al R estimador se puede decir que el modelo no esta sobrecargado.
+- En el F-statistic ha aumentado bastante por tanto es mucho mejor el modelo ya que tomando la hipotesis H0=0 (hipotesis nula) con el F nuestro significa que hay al menos un modelo.
+- En el p-value es más pequeño que el primer modelo por tanto también se ha mejorado en este aspecto y por tanto al ser menor que el nivel de significancia aceptamos H1.
+- En los grados de libretad han aumentado por tanto es un modelo bueno.
+
+Con respecto a las gráficas: 
+- 1 Gráfica : fijandose en la escala y comprandolo con el primer modelo se observa que es mucho mejor este modelo y es más lineal aunque no se acerca mucho a la horizontal y=0 pero sigue siendo un mejor modelo aproximado que el anterior.
+- 2 Gráfica : en esta gráfica se ha empeorado el modelo ya que no se acerca a la línea deseada y se observan valores que podrían estar influenciandolo.
+- 3 Gráfica: se observa que se ha mejorado el modelo y el modelo no está muy disperso.
+- 4 Gráfica: parece que hay menos valores que podrían ser outliers o importantes tomando la distancia de Cook pero realmente no se ha mejorado el modelo.
+
 
 En el caso de los fallecidos vemos como un ajuste logaritmico es el mejor, de modo que cuanto mayor sea la edad del contagiado, mayor será la posibilidad de fallecimiento.
 
@@ -120,7 +156,24 @@ lm2
 plot(sum_hospitalizados)
 abline(lm2)
 summary(lm2)
+plot(lm2)
 ```
+
+### Se analiza el modelo: 
+ Con respecto al summary:
+- En los errores (Residuals) se han bajado un poco el mínimo con respecto al mejor modelo pero también se ha aumentado el máximo por tanto no nos dice si el modelo ha mejorado.
+- En el Coefficients se ha empeorado bastante el modelo ya que ahora ni siquiera hay valores bastante importantes y se observa que el t-value se acerca al 0  y la probablididad de significancia es muy bajo por tanto no  hay que mantener esas variables ya que no son significativas.
+- En el R estimador como se reafirma en los anteriores analisis de este modelo es peor que el modelo primero ya que ahora hay un 27,22% de los valores representativos significando esto que es un modelo bastante malo y con respecto al R ajustado al no ser muy cercanos los valores podria haberse sobrecargado el modelo.
+- En el F-statistic esta muy muy cerca del 1.0 por tanto si la hipotesis es de H0=0 (hipotesis nula) todavía se puede decir que hay al menos un modelo.
+- En el p-value es mayor que el nivel de significancia por tanto aceptamos la hipotesis nula.No hay modelo válido.
+- En los grados de libretad no han cambiado con respecto al mejor modelo.
+
+Con respecto a las gráficas: 
+- 1 Gráfica:fijandose en la escala y comprandolo con el mejor modelo se observa que es  peor  este modelo y es más lineal aunque no se acerca mucho a la horizontal y=0 pero sigue siendo peor modelo.
+- 2 Gráfica: en esta gráfica ha empeorado aun peor ya que ni se acerca a la linea y=x ni es mejor comprandolo con antriores.Por tanto el modelo no es bueno.
+- 3 Gráfica: se observa que se ha mejorado el modelo y el modelo no está muy disperso.
+- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de importantes son los valores.
+
 
 Como en el caso anterior vemos que este ajuste lineal no es lo más óptimo, de modo que buscamos otro mejor.
 
@@ -130,11 +183,46 @@ lm2
 summary(lm2)
 ```
 
+### Se analiza el modelo: 
+ Con respecto al summary:
+ - En los errores (Residuals) se han bajado el mínimo con respecto al primer modelo pero también se ha aumentado el máximo por tanto no nos dice si el modelo ha mejorado.
+ - En el Coefficients se ha empeorado bastante el modelo ya que ahora ni siquiera hay valores importantes y se observa que el t-value se acerca al 0  y la probablididad de significancia es muy bajo por tanto ni es bueno el modelo ni hay que mantener esas variables ya que no son significativas.
+ - En el R estimador como se reafirma en los anteriores analisis de este modelo es peor que el modelo primero ya que ahora hay un 28,29% de los valores representativos significando esto que es un modelo bastante malo y con respecto al R ajustado al no ser muy cercanos los valores podria haberse sobrecargado el modelo.
+ - En el F-statistic esta muy muy cerca del 1.0 por tanto casi se podria decir que no hay modelo válido si la hipotesis es de H0=0 (hipotesis nula).
+ - En el p-value es mayor que el nivel de significancia por tanto aceptamos la hipotesis nula.No hay modelo válido.
+ - En los grados de libretad han disminuido con respecto al analisis del primer modelo pero siguen siendo demciado bajos y por tanto el modelo sigue siendo bastante malo.
+ 
+ Con respecto a las gráficas: 
+- 1 Gráfica : parece que el modelo se ha mejorado un poco tomando en cuenta la escala comprandolo con el primer modelo y aunque no es muy bueno ya que no se acerca al y=0 quitandole los outliers se mejoraría bastante la grafica.
+- 2 Gráfica : en esta gráfica ha empeorado aun peor ya que ni se acerca a la linea y=x ni es mejor comprandolo con antriores.Por tanto el modelo no es bueno.
+- 3 Gráfica: parece que se ha mejorado ya que no esta tan disperso y se aprecian los valores importantes /outliers.
+- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de importantes son los valores.
+
+En general este modelo es bastante malo y por tanto se habría que quedar con el primer modelo.
 ```{r}
 lm2 <- lm(edades~log(sum), data=sum_hospitalizados)
 lm2
 summary(lm2)
+plot(lm2)
 ```
+
+### Se analiza el modelo: 
+ Con respecto al summary:
+- En los errores (Residuals) se han bajado el mínimo con respecto al primer modelo pero también se ha aumentado el máximo por tanto no nos dice si el modelo ha mejorado.
+- En el Coefficients se ha empeorado bastante el modelo ya que ahora ni siquiera hay valores importantes y se observa que el t-value se acerca al 0 y en otro es negativo  y la probablididad de significancia es muy bajo por tanto ni es bueno el modelo ni hay que mantener esas variables ya que no son significativas.
+- En el R estimador como se reafirma en los anteriores analisis de este modelo es peor que el modelo primero ya que ahora hay un 13,34% de los valores representativos significando esto que es un modelo bastante malo y con respecto al R ajustado al no ser muy cercanos los valores se ha  sobrecargado el modelo.
+- En el F-statistic esta muy muy cerca del 1.0 por tanto casi se podria decir que no hay modelo válido si la hipotesis es de H0=0 (hipotesis nula).
+- En el p-value es mayor que el nivel de significancia por tanto aceptamos la hipotesis nula.No hay modelo válido.
+- En los grados de libretad no han cambiado con respecto al mejor modelo. 
+
+Con respecto a las gráficas: 
+- 1 Gráfica :fijandose en la escala y comprandolo con el mejor modelo se observa que es mucho peor  este modelo y es más como una parábola por tanto no se acerca mucho a la horizontal y=0 y sigue siendo peor modelo.
+- 2 Gráfica : se aprecia que en esta gráfica se ha mejorado un poco comparandolo con el modelo anterior aunque siguen habiendo valores outliers los cuales hacen que la gráfica no salga mejor en y=x.
+- 3 Gráfica: se observa que se ha mejorado el modelo y el modelo no está muy disperso.
+- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de importantes son los valores.
+
+
+
  En este caso ninguno mejora el ajuste lineal, por lo que no se ha podido encontrar ninguno útil, ya que son todos tienen una variabilidad representada del modelo (R-Squared) muy baja.
 
 
