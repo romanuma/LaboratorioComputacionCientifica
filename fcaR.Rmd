@@ -23,7 +23,6 @@ Cargan las librerías:
 library(readr)
 library(dplyr)
 library(arules)
-library(arulesViz)
 library(fcaR)
 
 ```
