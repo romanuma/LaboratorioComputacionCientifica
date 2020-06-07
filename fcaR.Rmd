@@ -1,0 +1,101 @@
+---
+title: "fcaR Radiografía"
+author: "Elizaveta, Javier y Adrián"
+date: "`r Sys.Date()`"
+output:
+  prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Estos datos contienen radiografías de tórax de casos de COVID-19. Créditos a Joseph Paul Cohen por abrir este conjunto de datos en Github.Los datos se recopilarán de fuentes públicas, así como a través de la recopilación indirecta de hospitales y médicos.
+
+Cargan las librerías:
+```{r,warning=FALSE ,results=FALSE,message=FALSE}
+library(readr)
+library(dplyr)
+library(arules)
+library(arulesViz)
+library(fcaR)
+
+```
+
+Cargan el dataset:
+```{r,warning=FALSE}
+metadata <- read.csv("https://raw.githubusercontent.com/ieee8023/covid-chestxray-dataset/master/metadata.csv")
+covid<- metadata %>%
+  select(pO2_saturation,leukocyte_count,neutrophil_count,lymphocyte_count)
+
+covid$pO2_saturation<-discretize(covid$pO2_saturation,breaks=2,labels=c("0","1"))
+
+covid$leukocyte_count<-discretize(covid$leukocyte_count,breaks=2,labels=c("0","1"))
+
+covid$neutrophil_count<-discretize(covid$neutrophil_count,breaks=2,labels=c("0","1"))
+
+covid$lymphocyte_count<-discretize(covid$lymphocyte_count,breaks=2,labels=c("0","1"))
+```
+
+Se elimina los valores NA:
+```{r}
+covid$pO2_saturation[is.na(covid$pO2_saturation)] <- 0
+covid$leukocyte_count[is.na(covid$leukocyte_count)] <- 0
+covid$neutrophil_count[is.na(covid$neutrophil_count)] <- 0
+covid$lymphocyte_count[is.na(covid$lymphocyte_count)] <- 0
+```
+
+## Convierte a Contexto Formal y se visualiza:
+
+```{r}
+covid_fc <- FormalContext$new(covid)
+covid_fc$plot()
+```
+
+
+
+## Encuentro las implicaciones: 
+```{r}
+covid_fc$find_implications()
+covid_fc$implications
+covid_fc$implications$cardinality()# 3 implicaciones
+suma<- covid_fc$implications$size()
+colMeans(suma)#Media
+```
+
+
+## Encuentro los conceptos: 
+
+```{r}
+covid_fc$find_concepts()
+covid_fc$concepts#13 conceptos
+```
+
+
+## Se dibuja el retículo de conceptos
+```{r}
+covid_fc$concepts$plot()
+```
+
+Se elimina la redundancia en el conjunto de implicaciones. ¿Cuantas implicaciones han aparecido tras aplicar la lógica?
+```{r}
+covid_fc$implications$apply_rules(rules=c("composition",
+                                      "generalization",
+                                      "simplification"),
+                            parallelize = FALSE)
+covid_fc$implications$cardinality()
+covid_fc$implications
+```
+
+Todos los atributos que aparezcan en todos las implicaciones.
+
+```{r}
+covid_fc$implications$get_attributes()
+```
+
