@@ -71,7 +71,7 @@ plot(sum_hospitalizados)
 plot(sum_ingresos)
 ```
 
-# Creacion modelos
+# Creación modelos
 
 ```{r}
 lm1 <- lm(edades~sum, data=sum_fallecidos)
@@ -79,16 +79,32 @@ lm1
 plot(sum_fallecidos)
 abline(lm1)
 summary(lm1)
+plot(lm1)
 ```
+ ### Se analiza el modelo: 
+ Con respecto al summary:
+- En el Coefficients se puede observar que en este caso no es muy significativo la variable "sum" ya que en el t_value esta cerca del 0 por tanto no es muy significante y en la probablididad de los valores sean significativos también aparece que no es muy significante y por tanto esta variable se podria quitar.
+- En el R estimador tan solo es hay un 42,82% lo cuál indica que no es muy bueno el modelo y con respecto al R ajustado no son muy cercanos por tanto podria haber sobrecargado un poco el modelo.
+- En el F-statistic no es muy alto pero sigue siendo mayor que 1 por tanto si H0=0 (hipotesis nula) entonces significa que al menos hay un modelo aqui.
+- En el p-value es menor que el nivel de significancia(0,05) por tanto tomando la hipotesis planteada anterior se puede decir que aceptamos H1.
+- En los grados de libretad son muy bajos por tanto no es muy bueno.
 
-Intentamos mejorarla convirtiendola a modelo no lineal
+Con respecto a las gráficas: 
+- 1 Gráfica : se observa que no es muy bueno el modelo  ya que los valores no se acercan a la linea y=0.Tambíen podemos ver valores que podrían ser significantes o outliers.
+- 2 Gráfica : el modelo no se acerca a la linea y=x y la mayoria de los valores no estan distribuidas en ella por tanto es bastante malo el modelo.
+- 3 Gráfica: Hay bastantes valores que pueden ser outliers o importantes y los valores son bastante dispersos por tanto tiene bastantes errores.Quitando los outliers se podría mejorar bastante la gráfica.
+- 4 Gráfica: se sacan las mismas conclusiones y y se ven los valores outliers e importantes con la distancia de Cook para ver como de imporantes son los valores.
+
+En general se observa que el modelo no es muy bueno y que se podria mejorar.
+
+## Intentamos mejorarla convirtiendola a modelo no lineal
 
 ```{r}
 lm1 <- lm(edades~I(sum)+I(sum^2), data=sum_fallecidos)
 lm1
 summary(lm1)
 ```
-
+## Modelo logarítmico
 ```{r}
 lm1 <- lm(edades~log(sum), data=sum_fallecidos)
 lm1
