@@ -1,5 +1,5 @@
 ---
-title: "Reglas de Asociación Radiografia"
+title: "Reglas de Asociación Radiografía"
 author: "Elizaveta, Javier y Adrián"
 date: "24/5/2020"
 output:
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-# Estos datos contienen radiografías de tórax de casos de COVID-19. Créditos a Joseph Paul Cohen por abrir este conjunto de datos en Github.
+# Estos datos contienen radiografías de tórax de casos de COVID-19. Créditos a Joseph Paul Cohen por abrir este conjunto de datos en Github.Los datos se recopilarán de fuentes públicas, así como a través de la recopilación indirecta de hospitales y médicos.
 
 ```{r,warning=FALSE ,results=FALSE,message=FALSE}
 library(readr)
@@ -23,6 +23,7 @@ library(arulesViz)
 
 ```
 
+Cargo el dataset:
 ```{r,warning=FALSE}
 metadata <- read.csv("https://raw.githubusercontent.com/ieee8023/covid-chestxray-dataset/master/metadata.csv")
 covid<- metadata %>%
@@ -30,7 +31,7 @@ covid<- metadata %>%
 
 ```
 
-## Discretizo los valores : 
+### Discretizo los valores : 
 
 ```{r}
 attach(covid)
@@ -61,11 +62,16 @@ inspect(reglas)
 
 ```{r,warning=FALSE}
 plot(reglas)
+```
 
+Como se pude observar hay mucha dispersión en el gráfico aunque nos quedariamos con los valores con mayor confianza y mejor soporte.
+
+```{r}
 plot(reglas, method="matrix", engine="htmlwidget")
 
 ```
 
+En esta gráfica se muestra la relación de las reglas por la derecha y por la izquierda según el lift.
 
 ```{r,warning=FALSE}
 
@@ -82,6 +88,5 @@ plot(subrules2, method="graph", engine="htmlwidget",
 
 ```
 
-
-
+Estas con algunas de las gráficas dinámicas cogiendo solo 5 reglas aleatorias.
 
